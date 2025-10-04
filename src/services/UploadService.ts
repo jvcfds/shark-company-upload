@@ -1,11 +1,14 @@
+// src/services/UploadService.ts  (substitua a função uploadFileToUploads existente)
 import { supabase } from '../supabase'
 
 const BUCKET = 'Uploads'
 
 export async function uploadFileToUploads(file: File, folder = 'public') {
-  const path = `${folder}/${Date.now()}-${file.name}`
+  const { data: sessionData } = await supabase.auth.getSession()
+  const userId = sessionData?.session?.user?.id
+  if (!userId) throw new Error('Usuário não autenticado')
 
-  console.log('[upload] bucket=', BUCKET, 'path=', path)
+  const path = `${folder}/${userId}/${Date.now()}-${file.name}`
 
   const { data, error } = await supabase.storage
     .from(BUCKET)
@@ -18,13 +21,4 @@ export async function uploadFileToUploads(file: File, folder = 'public') {
 
   const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path)
   return { key: data?.Key ?? path, publicUrl: urlData?.publicUrl }
-}
-
-export async function listPublicFiles(prefix = 'public') {
-  const { data, error } = await supabase.storage.from(BUCKET).list(prefix)
-  if (error) {
-    console.error('[listPublicFiles] error', error)
-    throw error
-  }
-  return data || []
 }
