@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { uploadFileToUploads } from '../services/uploadService'
+import { uploadFileToUploads } from '../services/UploadService'
 
 type Props = {
   onUploaded?: (publicUrl?: string) => void

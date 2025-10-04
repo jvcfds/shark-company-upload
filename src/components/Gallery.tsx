@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { listPublicFiles } from '../services/uploadService'
+import { listPublicFiles } from '../services/UploadService'
 import { supabase } from '../supabase'
 
 export const Gallery: React.FC = () => {
