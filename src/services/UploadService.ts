@@ -22,3 +22,12 @@ export async function uploadFileToUploads(file: File, folder = 'public') {
   const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path)
   return { key: data?.Key ?? path, publicUrl: urlData?.publicUrl }
 }
+export async function deleteFile(key: string) {
+  // key ex: 'public/<userId>/timestamp-filename.jpg'
+  const { error } = await supabase.storage.from(BUCKET).remove([key])
+  if (error) {
+    console.error('[deleteFile] error', error)
+    throw error
+  }
+  return true
+}
